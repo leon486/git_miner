@@ -26,7 +26,7 @@ def read_commits repo
       # => 2  user
       # => 3  title
 
-      DB[:commit].insert('',repo[:id],data[0],'','','',data[2],commit_date,data[3],'')
+      DB[:commit].insert('',repo[:id],'',data[0],'','','',data[2],commit_date,commit_date,data[3],'')
       counter= counter+1
     end
     file.close
@@ -43,10 +43,10 @@ def find_bug_commits repo
     #find bugs
     bug_keywords = ['bug', 'error', 'issue','fix','bugfix']
     bug_keywords.each do |bk|
-      if (commit_body.include? bk)
+      if (commit_body.downcase.include? bk)
         bug = true
       end
-      if (c[:title].include? bk)
+      if (c[:title].downcase.include? bk)
         bug = true
       end
     end
@@ -119,7 +119,7 @@ end
 
 repositories = DB[:repository].where(:active=>1,:completed=>0)
 repositories.each do |r|
-  p "Working on repository #{r[:name]}::"
+  p "Working on repository #{r[:name]}::::"
   if !r[:file_completed]
     p "Generating commit file"
     write_commit_history_to_file r
@@ -139,7 +139,7 @@ repositories.each do |r|
   end
 
   if !r[:bug_completed]
-    p "Calculating bugs"
+    p "Detecting bug commits"
     find_bug_commits r
       r[:bug_completed] = 1
       repositories.where(:id=>r[:id]).update(:bug_completed => 1)
