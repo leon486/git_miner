@@ -1,0 +1,4 @@
+rating	commit_interval
+4.00473	9
+3.99469	159
+3.98286	228
